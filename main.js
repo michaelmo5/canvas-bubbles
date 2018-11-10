@@ -18,8 +18,34 @@ window.addEventListener('resize', function(){
 	resizeCanvas();
 });
 
-function setup(){
+var Circle = {
+	x: 0,
+	y: 0,
+	radius: 0,
+	growing: true,
+	update: function(deltTime){
+		this.radius += 1 * deltTime;
+	},
+	render: function(){
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.radius, 0, 2*PI);
+		ctx.lineWidth = 1;
+		ctx.stroke();
+	}
+};
 
+var CIRLES = [];
+
+function setup(){
+	for(let i=0; i<100; i++){
+		let c = Object.create(Circle);
+		c.x = Math.random() * resolution.x;
+		c.y = Math.random() * resolution.y;
+
+		c.radius = Math.random() * 50;
+
+		CIRLES.push(c);
+	}
 }
 
 function update(deltaTime){
@@ -27,6 +53,10 @@ function update(deltaTime){
 }
 
 function render(){
+	clear();
+	CIRLES.forEach((c) => {
+		c.render();
+	});
 
 }
 
