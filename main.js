@@ -1,6 +1,6 @@
 const PI = Math.PI;
 const canvas = document.querySelector('#mainCanvas');
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext('2d');
 
 var resolution = {x: 1920, y: 1080};
 
@@ -19,15 +19,28 @@ window.addEventListener('resize', function(){
 });
 
 // Bubbles
-const growSpeed = 50;
+const growSpeed = 1;
 const lineWidth = 0.5;
-const spawnRate = 5;	// [ms]
-const circleLimit = 100;
+const spawnRate = 0;	// [ms]
+const circleLimit = 200;
+const minInitSize = 5;
+const maxInitSize = 10;
 
 function distance(p, q){
 	let a = p.x - q.x;
 	let b = p.y - q.y;
 	return Math.sqrt( a*a + b*b );
+}
+
+function getPixel(url, x, y) {
+	let img = new Image();
+	img.src = url;
+	let canvass = document.createElement('canvas');
+	canvass.width = img.width;
+	canvass.height = img.height
+	let context = canvass.getContext('2d');
+	context.drawImage(img, 0, 0);
+	return context.getImageData(x, y, 1, 1).data;
 }
 
 var Circle = {
@@ -46,6 +59,14 @@ var Circle = {
 				valid = false;
 			}
 		});
+
+		if(valid){
+			let pixelData = getPixel('1.jpg', this.x, this.y);
+
+			if(pixelData[0] < 128){
+				valid = false;
+			}
+		}
 
 		return valid;
 	},
@@ -90,7 +111,7 @@ function getCircle(){
 	c.x = Math.random() * resolution.x;
 	c.y = Math.random() * resolution.y;
 
-	c.radius = Math.random() * 50;
+	c.radius = Math.random() * (maxInitSize - minInitSize) + minInitSize;
 	return c;
 }
 
