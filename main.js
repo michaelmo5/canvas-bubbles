@@ -18,18 +18,34 @@ window.addEventListener('resize', function(){
 	resizeCanvas();
 });
 
+// Bubbles
+const growSpeed = 50;
+const lineWidth = 0.5;
+
 var Circle = {
 	x: 0,
 	y: 0,
 	radius: 0,
 	growing: true,
 	update: function(deltTime){
-		this.radius += 1 * deltTime;
+		if(this.growing){
+			this.radius += growSpeed * deltTime;
+
+			// Stop growing after touching screen borders
+			if(
+				this.x - this.radius <= 0
+				|| this.x + this.radius >= resolution.x
+				|| this.y - this.radius <= 0
+				|| this.y + this.radius >= resolution.y
+			){
+				this.growing = false;
+			}
+		}
 	},
 	render: function(){
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.radius, 0, 2*PI);
-		ctx.lineWidth = 1;
+		ctx.lineWidth = lineWidth;
 		ctx.stroke();
 	}
 };
@@ -49,7 +65,9 @@ function setup(){
 }
 
 function update(deltaTime){
-
+	CIRLES.forEach((c) => {
+		c.update(deltaTime);
+	});
 }
 
 function render(){
