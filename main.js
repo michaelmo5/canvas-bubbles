@@ -21,6 +21,8 @@ window.addEventListener('resize', function(){
 // Bubbles
 const growSpeed = 50;
 const lineWidth = 0.5;
+const spawnRate = 100;	// [ms]
+const circleLimit = 100;
 
 function distance(p, q){
 	let a = p.x - q.x;
@@ -68,21 +70,36 @@ var Circle = {
 
 var CIRLES = [];
 var circlesCount = 0;
+var lastCircleSpawnTime = 0;
+
+function getCircle(){
+	let c = Object.create(Circle);
+	c.x = Math.random() * resolution.x;
+	c.y = Math.random() * resolution.y;
+
+	c.radius = Math.random() * 50;
+	return c;
+}
 
 function setup(){
-	for(let i=0; i<100; i++){
-		let c = Object.create(Circle);
-		c.x = Math.random() * resolution.x;
-		c.y = Math.random() * resolution.y;
-
-		c.radius = Math.random() * 50;
-		c.id = ++circlesCount;
-
-		CIRLES.push(c);
-	}
+	//
 }
 
 function update(deltaTime){
+	let deltaFromLastSpawn = performance.now() - lastCircleSpawnTime;
+
+	if(circlesCount < circleLimit){
+		if(deltaFromLastSpawn >= spawnRate){
+			let c = getCircle();
+
+			if(true){
+				c.id = ++circlesCount;
+				CIRLES.push(c);
+				lastCircleSpawnTime = performance.now();
+			}
+		}
+	}
+
 	CIRLES.forEach((c) => {
 		c.update(deltaTime);
 	});
