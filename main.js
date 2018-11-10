@@ -22,7 +22,14 @@ window.addEventListener('resize', function(){
 const growSpeed = 50;
 const lineWidth = 0.5;
 
+function distance(p, q){
+	let a = p.x - q.x;
+	let b = p.y - q.y;
+	return Math.sqrt( a*a + b*b );
+}
+
 var Circle = {
+	id: 0,
 	x: 0,
 	y: 0,
 	radius: 0,
@@ -40,6 +47,15 @@ var Circle = {
 			){
 				this.growing = false;
 			}
+
+			// Stop frowing after touching other Circle
+			CIRLES.forEach((c) => {
+				if( this.id != c.id
+					&& (this.radius + c.radius) >= distance(this, c)
+				){
+					this.growing = false;
+				}
+			});
 		}
 	},
 	render: function(){
@@ -51,6 +67,7 @@ var Circle = {
 };
 
 var CIRLES = [];
+var circlesCount = 0;
 
 function setup(){
 	for(let i=0; i<100; i++){
@@ -59,6 +76,7 @@ function setup(){
 		c.y = Math.random() * resolution.y;
 
 		c.radius = Math.random() * 50;
+		c.id = ++circlesCount;
 
 		CIRLES.push(c);
 	}
